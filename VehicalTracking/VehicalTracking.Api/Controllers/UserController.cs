@@ -1,23 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
+using VehicalTracking.Service.Models;
+using VehicalTracking.Service.User;
 
 namespace VehicalTracking.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
-        private readonly ILogger<UserController> _logger;
+        private readonly IUserService _userService;
 
-        public UserController(ILogger<UserController> logger)
+        public UserController(IUserService userService)
         {
-            _logger = logger;
+            _userService = userService;
         }
 
-        [HttpGet]
-        public IActionResult Get()
+        [HttpPost]
+        [Route("sign-up")]
+        public async Task<IActionResult> SignUp([FromBody] SignUpModel signUpModel)
         {
-            return Ok();
+            var response = await _userService.SignUp(signUpModel);
+            return Ok(response);
         }
     }
 }

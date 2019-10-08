@@ -1,12 +1,18 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Text;
+using System.Threading.Tasks;
 using VehicalTracking.Domain.User.Infrastructure;
 using VehicalTracking.Domain.User.Models;
+using VehicalTracking.Service.User;
 
 namespace VehicalTracking.Api
 {
@@ -22,17 +28,29 @@ namespace VehicalTracking.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Register the Swagger services
-            services.AddSwaggerDocument();
-
             // Add custom db context
             AddCustomDbContext(services, Configuration);
 
-            services.AddControllers();
+            // Configure Jwt Authentication
+            ConfigureJwtAuthentication(services);
+
+            services.AddControllers()
+                .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNameCaseInsensitive = true);
+
+            // Enforce lowercase routing
+            services.AddRouting(options => options.LowercaseUrls = true);
+
+            // Register the Swagger services
+            services.AddSwaggerDocument();
+
+            // Register services
+            RegisterServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+            UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole<Guid>> roleManager)
         {
             if (env.IsDevelopment())
             {
@@ -43,11 +61,14 @@ namespace VehicalTracking.Api
             app.UseOpenApi();
             app.UseSwaggerUi3();
 
+            // Seed default data
+            IdentityDataInitializer.SeedData(userManager, roleManager).Wait();
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
@@ -67,8 +88,53 @@ namespace VehicalTracking.Api
                     });
             });
 
-            services.AddDefaultIdentity<ApplicationUser>()
-                .AddEntityFrameworkStores<UserContext>();
+            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(config =>
+            {
+                config.User.RequireUniqueEmail = true;
+                config.Password.RequireDigit = true;
+                config.Password.RequiredLength = 5;
+                config.Password.RequireUppercase = false;
+                config.Password.RequireLowercase = false;
+                config.Password.RequireNonAlphanumeric = false;
+                config.Password.RequiredUniqueChars = 0;
+            })
+            .AddEntityFrameworkStores<UserContext>()
+            .AddDefaultTokenProviders();
+        }
+
+        public void ConfigureJwtAuthentication(IServiceCollection services)
+        {
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = Configuration["Tokens:Issuer"],
+                    ValidAudience = Configuration["Tokens:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnTokenValidated = context =>
+                    {
+                        var testing = context;
+                        return Task.FromResult(0);
+                    }
+                };
+            });
+        }
+
+        public void RegisterServices(IServiceCollection services)
+        {
+            // Services
+            services.AddTransient<IUserService, UserService>();
         }
     }
 }
