@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 using VehicleTracking.Common.Data;
 using VehicleTracking.Domain.Vehicle.Models;
 
@@ -19,15 +18,4 @@ namespace VehicalTracking.Domain.ApplicationUser.Infrastructure
             base.OnModelCreating(builder);
         }
     }
-
-    //public class VehicleContextFactory : IDesignTimeDbContextFactory<VehicleContext>
-    //{
-    //    public VehicleContext CreateDbContext(string[] args)
-    //    {
-    //        var optionsBuilder = new DbContextOptionsBuilder<VehicleContext>();
-    //        optionsBuilder.UseSqlServer("Server=.;Database=vehical-tracking;Trusted_Connection=True;MultipleActiveResultSets=true");
-
-    //        return new VehicleContext(optionsBuilder.Options);
-    //    }
-    //}
 }

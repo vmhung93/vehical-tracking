@@ -1,17 +1,16 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Text;
-using System.Threading.Tasks;
 using VehicalTracking.Domain.ApplicationUser.Infrastructure;
 using VehicleTracking.Api.Extensions.ErrorHandling;
+using VehicleTracking.API.Extensions.Authentication;
+using VehicleTracking.Common.Helpers;
 using VehicleTracking.Domain.ApplicationUser.Infrastructure;
 using VehicleTracking.Domain.ApplicationUser.Models;
 using VehicleTracking.Service;
@@ -34,7 +33,9 @@ namespace VehicleTracking.API
             AddCustomDbContext(services, Configuration);
 
             // Configure Jwt Authentication
-            ConfigureJwtAuthentication(services);
+            services.ConfigureJwtAuthentication(Configuration["Tokens:Issuer"],
+                Configuration["Tokens:Audience"],
+                Configuration["Tokens:Key"]);
 
             services.AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNameCaseInsensitive = true);
@@ -78,6 +79,9 @@ namespace VehicleTracking.API
             app.UseAuthentication();
             app.UseAuthorization();
 
+            // Configure helpers
+            ConfigureHelpers(app);
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -104,39 +108,19 @@ namespace VehicleTracking.API
                 .AddDefaultTokenProviders();
         }
 
-        public void ConfigureJwtAuthentication(IServiceCollection services)
-        {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = Configuration["Tokens:Issuer"],
-                    ValidAudience = Configuration["Tokens:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
-                };
-                options.Events = new JwtBearerEvents
-                {
-                    OnTokenValidated = context =>
-                    {
-                        var testing = context;
-                        return Task.FromResult(0);
-                    }
-                };
-            });
-        }
-
         public void RegisterAppServices(IServiceCollection services)
         {
+            // ASP.NET HttpContext dependency
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             // Services
             services.RegisterServices();
+        }
+
+        public void ConfigureHelpers(IApplicationBuilder app)
+        {
+            // Inject the IHttpContextAccessor into the HttpContextHelper
+            HttpContextHelper.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
         }
     }
 }

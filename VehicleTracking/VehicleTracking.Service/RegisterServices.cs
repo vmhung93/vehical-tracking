@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using VehicleTracking.Domain.Vehicle.CommandHandlers;
+using VehicleTracking.Domain.Vehicle.Queries;
 using VehicleTracking.Service.User;
 using VehicleTracking.Service.Vehicle;
-using VehicleTracking.Domain.Vehicle.CommandHandlers.Vehicle;
 
 namespace VehicleTracking.Service
 {
@@ -21,8 +22,10 @@ namespace VehicleTracking.Service
         {
             // Command handlers
             services.AddTransient<RegisterVehicleCommandHandler, RegisterVehicleCommandHandler>();
+            services.AddTransient<ResignVehicleCommandHandler, ResignVehicleCommandHandler>();
 
             // Queries
+            services.AddTransient<GetVehicleByCodeQuery, GetVehicleByCodeQuery>();
         }
     }
 }

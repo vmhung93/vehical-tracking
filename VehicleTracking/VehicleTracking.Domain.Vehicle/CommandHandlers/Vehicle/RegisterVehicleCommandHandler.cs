@@ -1,11 +1,14 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using VehicalTracking.Domain.ApplicationUser.Infrastructure;
 using VehicleTracking.Common.Command;
+using VehicleTracking.Common.Exceptions;
 
-namespace VehicleTracking.Domain.Vehicle.CommandHandlers.Vehicle
+namespace VehicleTracking.Domain.Vehicle.CommandHandlers
 {
     public class RegisterVehicleCommand : ICommand
     {
@@ -28,6 +31,14 @@ namespace VehicleTracking.Domain.Vehicle.CommandHandlers.Vehicle
 
         public async Task Handle(RegisterVehicleCommand command)
         {
+            // Check whether if vehicle code is existed
+            var isExist = await _context.Vehicles.Where(v => v.Code == command.Code).AnyAsync();
+
+            if (isExist)
+            {
+                throw new CustomException(ErrorCodes.EC_Vehicle_002);
+            }
+
             var vehicle = new Models.Vehicle()
             {
                 UserId = command.UserId,
