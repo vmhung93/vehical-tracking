@@ -83,8 +83,8 @@ namespace VehicleTracking.Service.User
 
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Email, vehicleTrackingUser.Email),
-                new Claim(ClaimTypes.NameIdentifier, vehicleTrackingUser.Id.ToString())
+                new Claim(ClaimTypes.NameIdentifier, vehicleTrackingUser.Id.ToString()),
+                new Claim(ClaimTypes.Email, vehicleTrackingUser.Email)
             };
 
             //Assign Roles
