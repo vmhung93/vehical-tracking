@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using System;
 using System.Net;
 using VehicalTracking.Common.Exceptions;
 
@@ -21,7 +22,7 @@ namespace VehicalTracking.Api.Extensions.ErrorHandling
 
                     if (contextFeature != null)
                     {
-                        string statusCode = HttpStatusCode.InternalServerError.ToString();
+                        string statusCode = Convert.ToString((int)HttpStatusCode.InternalServerError);
                         string message = contextFeature.Error.Message ?? "Internal Server Error";
 
                         if (contextFeature.Error.GetType() == typeof(CustomException))

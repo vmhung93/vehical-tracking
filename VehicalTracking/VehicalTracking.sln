@@ -13,9 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{BD099E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{0117D515-AFCF-4D86-80CB-4D602B1D1F6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicalTracking.Service", "VehicalTracking.Service\VehicalTracking.Service.csproj", "{35BF76A8-D7FB-42EA-96F2-EE03D49E1EDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VehicalTracking.Service", "VehicalTracking.Service\VehicalTracking.Service.csproj", "{35BF76A8-D7FB-42EA-96F2-EE03D49E1EDE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicalTracking.Domain.ApplicationUser", "VehicalTracking.Domain.ApplicationUser\VehicalTracking.Domain.ApplicationUser.csproj", "{5844007E-044A-4ECD-BC2C-4DFBCA4FAE1C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VehicalTracking.Domain.ApplicationUser", "VehicalTracking.Domain.ApplicationUser\VehicalTracking.Domain.ApplicationUser.csproj", "{5844007E-044A-4ECD-BC2C-4DFBCA4FAE1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleTracking.Domain.Vehicle", "VehicleTracking.Domain.Vehicle\VehicleTracking.Domain.Vehicle.csproj", "{E2C62547-1122-4D96-B4EA-20BF63EEB500}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{5844007E-044A-4ECD-BC2C-4DFBCA4FAE1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5844007E-044A-4ECD-BC2C-4DFBCA4FAE1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5844007E-044A-4ECD-BC2C-4DFBCA4FAE1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2C62547-1122-4D96-B4EA-20BF63EEB500}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2C62547-1122-4D96-B4EA-20BF63EEB500}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2C62547-1122-4D96-B4EA-20BF63EEB500}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2C62547-1122-4D96-B4EA-20BF63EEB500}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,6 +53,7 @@ Global
 		{CB0DFA2F-A166-464C-9322-165CD7361EE6} = {5054529D-DA0C-4DE4-973D-6E32C935D243}
 		{35BF76A8-D7FB-42EA-96F2-EE03D49E1EDE} = {0117D515-AFCF-4D86-80CB-4D602B1D1F6F}
 		{5844007E-044A-4ECD-BC2C-4DFBCA4FAE1C} = {BD099E38-22A1-494C-854E-4DACEDC7C381}
+		{E2C62547-1122-4D96-B4EA-20BF63EEB500} = {BD099E38-22A1-494C-854E-4DACEDC7C381}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BBB3268A-7135-4834-9750-130E6278D07A}

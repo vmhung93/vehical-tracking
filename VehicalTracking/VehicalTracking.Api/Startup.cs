@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using VehicalTracking.Api.Extensions.ErrorHandling;
 using VehicalTracking.Domain.ApplicationUser.Infrastructure;
 using VehicalTracking.Domain.ApplicationUser.Models;
-using VehicalTracking.Service.User;
+using VehicalTracking.Service;
 
 namespace VehicalTracking.Api
 {
@@ -44,8 +44,8 @@ namespace VehicalTracking.Api
             // Register the Swagger services
             services.AddSwaggerDocument();
 
-            // Register services
-            RegisterServices(services);
+            // Register application services
+            RegisterAppServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -75,6 +75,7 @@ namespace VehicalTracking.Api
 
             // Authenticate before the user accesses secure resources.
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
@@ -84,6 +85,7 @@ namespace VehicalTracking.Api
 
         public void AddCustomDbContext(IServiceCollection services, IConfiguration configuration)
         {
+            // Application user context
             services.AddDbContext<AppUserContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
@@ -94,18 +96,21 @@ namespace VehicalTracking.Api
                     });
             });
 
-            services.AddIdentity<AppUser, IdentityRole<Guid>>(config =>
+            // Vehicle context
+            services.AddDbContext<VehicleContext>(options =>
             {
-                config.User.RequireUniqueEmail = true;
-                config.Password.RequireDigit = true;
-                config.Password.RequiredLength = 5;
-                config.Password.RequireUppercase = false;
-                config.Password.RequireLowercase = false;
-                config.Password.RequireNonAlphanumeric = false;
-                config.Password.RequiredUniqueChars = 0;
-            })
-            .AddEntityFrameworkStores<AppUserContext>()
-            .AddDefaultTokenProviders();
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
+                    sqlServerOptionsAction: sqlOptions =>
+                    {
+                        sqlOptions.MigrationsAssembly("VehicleTracking.Domain.Vehicle");
+                        sqlOptions.EnableRetryOnFailure(maxRetryCount: 10, maxRetryDelay: TimeSpan.FromSeconds(30), errorNumbersToAdd: null);
+                    });
+            });
+
+            // Identity
+            services.AddIdentity<AppUser, IdentityRole<Guid>>()
+                .AddEntityFrameworkStores<AppUserContext>()
+                .AddDefaultTokenProviders();
         }
 
         public void ConfigureJwtAuthentication(IServiceCollection services)
@@ -137,10 +142,10 @@ namespace VehicalTracking.Api
             });
         }
 
-        public void RegisterServices(IServiceCollection services)
+        public void RegisterAppServices(IServiceCollection services)
         {
             // Services
-            services.AddTransient<IUserService, UserService>();
+            services.RegisterServices();
         }
     }
 }
