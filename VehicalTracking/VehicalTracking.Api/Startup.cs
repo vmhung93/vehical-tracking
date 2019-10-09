@@ -10,8 +10,8 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
-using VehicalTracking.Domain.User.Infrastructure;
-using VehicalTracking.Domain.User.Models;
+using VehicalTracking.Domain.ApplicationUser.Infrastructure;
+using VehicalTracking.Domain.ApplicationUser.Models;
 using VehicalTracking.Service.User;
 
 namespace VehicalTracking.Api
@@ -49,7 +49,7 @@ namespace VehicalTracking.Api
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
-            UserManager<ApplicationUser> userManager,
+            UserManager<AppUser> userManager,
             RoleManager<IdentityRole<Guid>> roleManager)
         {
             if (env.IsDevelopment())
@@ -88,7 +88,7 @@ namespace VehicalTracking.Api
                     });
             });
 
-            services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(config =>
+            services.AddIdentity<AppUser, IdentityRole<Guid>>(config =>
             {
                 config.User.RequireUniqueEmail = true;
                 config.Password.RequireDigit = true;

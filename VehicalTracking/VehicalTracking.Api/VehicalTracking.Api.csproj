@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VehicalTracking.Common\VehicalTracking.Common.csproj" />
-    <ProjectReference Include="..\VehicalTracking.Domain.User\VehicalTracking.Domain.User.csproj" />
+    <ProjectReference Include="..\VehicalTracking.Domain.ApplicationUser\VehicalTracking.Domain.ApplicationUser.csproj" />
     <ProjectReference Include="..\VehicalTracking.Service\VehicalTracking.Service.csproj" />
   </ItemGroup>
 

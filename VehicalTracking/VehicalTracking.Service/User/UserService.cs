@@ -8,7 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using VehicalTracking.Common.Constants;
-using VehicalTracking.Domain.User.Models;
+using VehicalTracking.Domain.ApplicationUser.Models;
 using VehicalTracking.Service.Models;
 
 namespace VehicalTracking.Service.User
@@ -16,12 +16,12 @@ namespace VehicalTracking.Service.User
     public class UserService : IUserService
     {
         private readonly IConfiguration _configuration;
-        private readonly SignInManager<ApplicationUser> _signinManager;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<AppUser> _signinManager;
+        private readonly UserManager<AppUser> _userManager;
 
         public UserService(IConfiguration configuration,
-            UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signinManager)
+            UserManager<AppUser> userManager,
+            SignInManager<AppUser> signinManager)
         {
             _configuration = configuration;
             _userManager = userManager;
@@ -51,7 +51,7 @@ namespace VehicalTracking.Service.User
 
         public async Task<string> SignUp(SignUpModel signUpModel)
         {
-            var user = new ApplicationUser()
+            var user = new AppUser()
             {
                 UserName = signUpModel.UserName,
                 Email = signUpModel.Email
@@ -74,7 +74,7 @@ namespace VehicalTracking.Service.User
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private async Task<JwtSecurityToken> GenerateJWT(ApplicationUser vehicleTrackingUser)
+        private async Task<JwtSecurityToken> GenerateJWT(AppUser vehicleTrackingUser)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Tokens:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
