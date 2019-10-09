@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using VehicalTracking.Common.Constants;
+using VehicalTracking.Common.Exceptions;
 using VehicalTracking.Domain.ApplicationUser.Models;
 using VehicalTracking.Service.Models;
 
@@ -34,14 +35,14 @@ namespace VehicalTracking.Service.User
 
             if (user == null)
             {
-                throw new Exception();
+                throw new CustomException(ErrorCodes.EC_User_001, signInModel.Email);
             }
 
             var result = await _signinManager.CheckPasswordSignInAsync(user, signInModel.Password, false);
 
             if (!result.Succeeded)
             {
-                throw new Exception();
+                throw new CustomException(ErrorCodes.EC_User_002);
             }
 
             var token = await GenerateJWT(user);
@@ -62,7 +63,7 @@ namespace VehicalTracking.Service.User
 
             if (!result.Succeeded)
             {
-                throw new Exception();
+                throw new CustomException(ErrorCodes.EC_User_003, string.Join(" . ", result.Errors));
             }
 
             // Set default Role is vehicleTrackingUser

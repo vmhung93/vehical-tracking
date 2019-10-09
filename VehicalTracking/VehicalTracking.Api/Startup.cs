@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using VehicalTracking.Api.Extensions.ErrorHandling;
 using VehicalTracking.Domain.ApplicationUser.Infrastructure;
 using VehicalTracking.Domain.ApplicationUser.Models;
 using VehicalTracking.Service.User;
@@ -61,13 +62,18 @@ namespace VehicalTracking.Api
             app.UseOpenApi();
             app.UseSwaggerUi3();
 
+            // Configure handing errors globally
+            app.ConfigureExceptionHandler();
+
             // Seed default data
             IdentityDataInitializer.SeedData(userManager, roleManager).Wait();
 
+            // Use HTTPS Redirection middleware to redirect HTTP requests to HTTPS.
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
+            // Authenticate before the user accesses secure resources.
             app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
@@ -78,7 +84,7 @@ namespace VehicalTracking.Api
 
         public void AddCustomDbContext(IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<UserContext>(options =>
+            services.AddDbContext<AppUserContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
                     sqlServerOptionsAction: sqlOptions =>
@@ -98,7 +104,7 @@ namespace VehicalTracking.Api
                 config.Password.RequireNonAlphanumeric = false;
                 config.Password.RequiredUniqueChars = 0;
             })
-            .AddEntityFrameworkStores<UserContext>()
+            .AddEntityFrameworkStores<AppUserContext>()
             .AddDefaultTokenProviders();
         }
 

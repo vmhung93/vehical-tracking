@@ -7,7 +7,7 @@ using VehicalTracking.Domain.ApplicationUser.Models;
 
 namespace VehicalTracking.Domain.ApplicationUser.Infrastructure
 {
-    public class UserContext : IdentityDbContext<AppUser,
+    public class AppUserContext : IdentityDbContext<AppUser,
         IdentityRole<Guid>, 
         Guid, 
         IdentityUserClaim<Guid>,
@@ -16,7 +16,7 @@ namespace VehicalTracking.Domain.ApplicationUser.Infrastructure
         IdentityRoleClaim<Guid>,
         IdentityUserToken<Guid>>
     {
-        public UserContext(DbContextOptions<UserContext> options)
+        public AppUserContext(DbContextOptions<AppUserContext> options)
              : base(options)
         {
         }
@@ -43,14 +43,14 @@ namespace VehicalTracking.Domain.ApplicationUser.Infrastructure
         }
     }
 
-    public class UserContextFactory : IDesignTimeDbContextFactory<UserContext>
+    public class UserContextFactory : IDesignTimeDbContextFactory<AppUserContext>
     {
-        public UserContext CreateDbContext(string[] args)
+        public AppUserContext CreateDbContext(string[] args)
         {
-            var optionsBuilder = new DbContextOptionsBuilder<UserContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<AppUserContext>();
             optionsBuilder.UseSqlServer("Server=.;Database=vehical-tracking;Trusted_Connection=True;MultipleActiveResultSets=true");
 
-            return new UserContext(optionsBuilder.Options);
+            return new AppUserContext(optionsBuilder.Options);
         }
     }
 }
