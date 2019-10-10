@@ -27,7 +27,7 @@ namespace VehicalTracking.Api.Controllers
             }
 
             var response = await _userService.SignIn(signInModel);
-            return Ok(response);
+            return Ok(new { token = response });
         }
 
         [HttpPost]
@@ -40,7 +40,7 @@ namespace VehicalTracking.Api.Controllers
             }
 
             var response = await _userService.SignUp(signUpModel);
-            return Ok(response);
+            return Ok(new { token = response });
         }
     }
 }

@@ -3,10 +3,12 @@ using VehicleTracking.Common.Data;
 
 namespace VehicleTracking.Domain.LocationTracking.Models
 {
-    public class SessionTracking : BaseModel
+    public class Session : BaseModel
     {
-        public Guid UserId { get; set; }
-
         public Guid VehicleId { get; set; }
+
+        public DateTimeOffset StartTime { get; set; }
+
+        public DateTimeOffset? EndTime { get; set; }
     }
 }

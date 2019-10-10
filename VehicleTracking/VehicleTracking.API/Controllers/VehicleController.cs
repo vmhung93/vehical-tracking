@@ -43,10 +43,6 @@ namespace VehicalTracking.Api.Controllers
                 return BadRequest();
             }
 
-            // Get current user id
-            var userId = HttpContextHelper.GetCurrentUserId();
-            command.UserId = userId;
-
             // Register vehicle
             await _vehicleService.RegisterVehicle(command);
 
@@ -61,10 +57,6 @@ namespace VehicalTracking.Api.Controllers
             {
                 return BadRequest();
             }
-
-            // Get current user id
-            var userId = HttpContextHelper.GetCurrentUserId();
-            command.UserId = userId;
 
             // Delete vehicle
             await _vehicleService.ResignVehicle(command);

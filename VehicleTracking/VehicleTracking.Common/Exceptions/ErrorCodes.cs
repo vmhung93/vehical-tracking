@@ -33,5 +33,29 @@ namespace VehicleTracking.Common.Exceptions
         /// </summary>
         [Description("This vehicle code is existed - Code: {0}")]
         EC_Vehicle_002,
+
+        /// <summary>
+        /// Session doesn't existed
+        /// </summary>
+        [Description("This session doesn't existed - Id: {0}")]
+        EC_Session_001,
+
+        /// <summary>
+        /// There is no session in progress
+        /// </summary>
+        [Description("There is no session in progress for this vehicle - Vehicle Id: {0}")]
+        EC_Session_002,
+
+        /// <summary>
+        /// Can not retrieve current location 
+        /// </summary>
+        [Description("Can not retrieve current location of this vehicle - Vehicle Id: {0}")]
+        EC_Location_001,
+
+        /// <summary>
+        /// Can not retrieve journey 
+        /// </summary>
+        [Description("Can not retrieve journey of this vehicle - Vehicle Id: {0}")]
+        EC_Location_002,
     }
 }

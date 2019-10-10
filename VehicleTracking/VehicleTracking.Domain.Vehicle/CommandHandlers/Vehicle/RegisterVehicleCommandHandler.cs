@@ -36,7 +36,7 @@ namespace VehicleTracking.Domain.Vehicle.CommandHandlers
 
             if (isExist)
             {
-                throw new CustomException(ErrorCodes.EC_Vehicle_002);
+                throw new CustomException(ErrorCodes.EC_Vehicle_002, command.Code);
             }
 
             var vehicle = new Models.Vehicle()

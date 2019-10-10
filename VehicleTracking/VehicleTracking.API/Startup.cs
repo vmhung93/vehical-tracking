@@ -1,3 +1,4 @@
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -13,6 +14,7 @@ using VehicleTracking.API.Extensions.Authentication;
 using VehicleTracking.Common.Helpers;
 using VehicleTracking.Domain.ApplicationUser.Infrastructure;
 using VehicleTracking.Domain.ApplicationUser.Models;
+using VehicleTracking.Domain.LocationTracking.Infrastructure;
 using VehicleTracking.Service;
 
 namespace VehicleTracking.API
@@ -46,6 +48,15 @@ namespace VehicleTracking.API
             // Register the Swagger services
             services.AddSwaggerDocument();
 
+            // Application Insights telemetry collection.
+            services.AddApplicationInsightsTelemetry();
+
+            // Azure cache for Redis
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = Configuration["RedisCache:ConnectionString"];
+            });
+
             // Register application services
             RegisterAppServices(services);
         }
@@ -53,7 +64,8 @@ namespace VehicleTracking.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole<Guid>> roleManager)
+            RoleManager<IdentityRole<Guid>> roleManager,
+            TelemetryClient telemetryClient)
         {
             if (env.IsDevelopment())
             {
@@ -65,7 +77,7 @@ namespace VehicleTracking.API
             app.UseSwaggerUi3();
 
             // Configure handing errors globally
-            app.ConfigureExceptionHandler();
+            app.ConfigureExceptionHandler(telemetryClient);
 
             // Seed default data
             IdentityDataInitializer.SeedData(userManager, roleManager).Wait();
@@ -94,6 +106,12 @@ namespace VehicleTracking.API
             services.AddDbContext<ApplicationUserContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("UserConnectionString"));
+            });
+
+            // Tracking context
+            services.AddDbContext<LocationTrackingContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("LocationTrackingConnectionString"));
             });
 
             // Vehicle context
