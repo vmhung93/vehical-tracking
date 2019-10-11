@@ -25,7 +25,7 @@ Every 30 seconds, the device will send a request to update the vehicle location 
 The admin has to sign in to the back office side. After sign-in successful, the admin can retrieve the current location and journey of a specific vehicle at a certain time on a map.
 
 ## Future plane to improve
-
+- Implement the feature that will detect if the vehicle is stopped - The device send a lot of requests that contains the same longitude and latitude
 - Apply validation - Not completed yet
 - Integrate Google Maps API to retrieve the address
 - Apply Event Sourcing pattern
