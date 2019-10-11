@@ -1,18 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 using System;
 
 namespace VehicleTracking.Domain.ApplicationUser.Infrastructure
 {
     public class ApplicationUserContext : IdentityDbContext<Models.ApplicationUser,
-        IdentityRole<Guid>, 
-        Guid, 
-        IdentityUserClaim<Guid>,
-        IdentityUserRole<Guid>,
-        IdentityUserLogin<Guid>,
-        IdentityRoleClaim<Guid>,
+        IdentityRole<Guid>, Guid,
+        IdentityUserClaim<Guid>, IdentityUserRole<Guid>,
+        IdentityUserLogin<Guid>, IdentityRoleClaim<Guid>,
         IdentityUserToken<Guid>>
     {
         public ApplicationUserContext(DbContextOptions<ApplicationUserContext> options)
@@ -41,15 +37,4 @@ namespace VehicleTracking.Domain.ApplicationUser.Infrastructure
             builder.Entity<IdentityUserRole<Guid>>(b => { b.ToTable("UserRoles"); });
         }
     }
-
-    //public class ApplicationUserContextFactory : IDesignTimeDbContextFactory<ApplicationUserContext>
-    //{
-    //    public ApplicationUserContext CreateDbContext(string[] args)
-    //    {
-    //        var optionsBuilder = new DbContextOptionsBuilder<ApplicationUserContext>();
-    //        optionsBuilder.UseSqlServer("Server=.;Database=vehical-tracking;Trusted_Connection=True;MultipleActiveResultSets=true");
-
-    //        return new ApplicationUserContext(optionsBuilder.Options);
-    //    }
-    //}
 }

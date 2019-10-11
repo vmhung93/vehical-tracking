@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleTracking.API", "VehicleTracking.API\VehicleTracking.API.csproj", "{EEEC33DD-455A-4F1C-9BD3-CD5C2E2499BD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VehicleTracking.API", "VehicleTracking.API\VehicleTracking.API.csproj", "{EEEC33DD-455A-4F1C-9BD3-CD5C2E2499BD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{1426610B-7C23-4D12-8E78-C2F5D8F19878}"
 EndProject
@@ -11,13 +11,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Service", "Service", "{243F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Domain", "Domain", "{DFEDF5E5-D6F2-4E04-9220-EB8658917AFC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleTracking.Common", "VehicleTracking.Common\VehicleTracking.Common.csproj", "{FFAA36C1-45DE-4AFA-8129-E5FF47F14FAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VehicleTracking.Common", "VehicleTracking.Common\VehicleTracking.Common.csproj", "{FFAA36C1-45DE-4AFA-8129-E5FF47F14FAF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleTracking.Domain.ApplicationUser", "VehicleTracking.Domain.ApplicationUser\VehicleTracking.Domain.ApplicationUser.csproj", "{0179175D-E401-4699-96DB-0F38A58C485A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VehicleTracking.Domain.ApplicationUser", "VehicleTracking.Domain.ApplicationUser\VehicleTracking.Domain.ApplicationUser.csproj", "{0179175D-E401-4699-96DB-0F38A58C485A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleTracking.Domain.Vehicle", "VehicleTracking.Domain.Vehicle\VehicleTracking.Domain.Vehicle.csproj", "{F8B5E067-B9D4-48E5-9DD5-4C3B20809A89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VehicleTracking.Domain.Vehicle", "VehicleTracking.Domain.Vehicle\VehicleTracking.Domain.Vehicle.csproj", "{F8B5E067-B9D4-48E5-9DD5-4C3B20809A89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleTracking.Service", "VehicleTracking.Service\VehicleTracking.Service.csproj", "{44F30B13-A728-481E-BD0C-9A5AFDBB9123}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VehicleTracking.Service", "VehicleTracking.Service\VehicleTracking.Service.csproj", "{44F30B13-A728-481E-BD0C-9A5AFDBB9123}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleTracking.Domain.LocationTracking", "VehicleTracking.Domain.LocationTracking\VehicleTracking.Domain.LocationTracking.csproj", "{A442D6B9-D091-471F-9D72-6CAB9B46F010}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{44F30B13-A728-481E-BD0C-9A5AFDBB9123}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44F30B13-A728-481E-BD0C-9A5AFDBB9123}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44F30B13-A728-481E-BD0C-9A5AFDBB9123}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A442D6B9-D091-471F-9D72-6CAB9B46F010}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A442D6B9-D091-471F-9D72-6CAB9B46F010}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A442D6B9-D091-471F-9D72-6CAB9B46F010}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A442D6B9-D091-471F-9D72-6CAB9B46F010}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 		{0179175D-E401-4699-96DB-0F38A58C485A} = {DFEDF5E5-D6F2-4E04-9220-EB8658917AFC}
 		{F8B5E067-B9D4-48E5-9DD5-4C3B20809A89} = {DFEDF5E5-D6F2-4E04-9220-EB8658917AFC}
 		{44F30B13-A728-481E-BD0C-9A5AFDBB9123} = {243F4D26-F79A-4448-AD63-81998AA0AAA8}
+		{A442D6B9-D091-471F-9D72-6CAB9B46F010} = {DFEDF5E5-D6F2-4E04-9220-EB8658917AFC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E01C75BE-678A-4B76-83E7-85DC22C3687E}

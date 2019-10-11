@@ -10,7 +10,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VehicleTracking.Common\VehicleTracking.Common.csproj" />
     <ProjectReference Include="..\VehicleTracking.Domain.ApplicationUser\VehicleTracking.Domain.ApplicationUser.csproj" />
+    <ProjectReference Include="..\VehicleTracking.Domain.LocationTracking\VehicleTracking.Domain.LocationTracking.csproj" />
     <ProjectReference Include="..\VehicleTracking.Domain.Vehicle\VehicleTracking.Domain.Vehicle.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.ApplicationInsights;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -9,7 +10,7 @@ namespace VehicleTracking.Api.Extensions.ErrorHandling
 {
     public static class ExceptionMiddlewareExtensions
     {
-        public static void ConfigureExceptionHandler(this IApplicationBuilder app)
+        public static void ConfigureExceptionHandler(this IApplicationBuilder app, TelemetryClient telemetryClient)
         {
             app.UseExceptionHandler(appError =>
             {
@@ -22,6 +23,9 @@ namespace VehicleTracking.Api.Extensions.ErrorHandling
 
                     if (contextFeature != null)
                     {
+                        telemetryClient.TrackTrace(contextFeature.Error.StackTrace);
+                        telemetryClient.TrackException(contextFeature.Error);
+
                         string statusCode = Convert.ToString((int)HttpStatusCode.InternalServerError);
                         string message = contextFeature.Error.Message ?? "Internal Server Error";
 

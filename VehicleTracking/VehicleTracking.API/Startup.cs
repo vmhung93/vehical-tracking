@@ -1,19 +1,20 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.ApplicationInsights;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using System;
-using System.Text;
-using System.Threading.Tasks;
 using VehicalTracking.Domain.ApplicationUser.Infrastructure;
 using VehicleTracking.Api.Extensions.ErrorHandling;
+using VehicleTracking.API.Extensions.Authentication;
+using VehicleTracking.Common.Helpers;
 using VehicleTracking.Domain.ApplicationUser.Infrastructure;
 using VehicleTracking.Domain.ApplicationUser.Models;
+using VehicleTracking.Domain.LocationTracking.Infrastructure;
 using VehicleTracking.Service;
 
 namespace VehicleTracking.API
@@ -34,7 +35,9 @@ namespace VehicleTracking.API
             AddCustomDbContext(services, Configuration);
 
             // Configure Jwt Authentication
-            ConfigureJwtAuthentication(services);
+            services.ConfigureJwtAuthentication(Configuration["Tokens:Issuer"],
+                Configuration["Tokens:Audience"],
+                Configuration["Tokens:Key"]);
 
             services.AddControllers()
                 .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNameCaseInsensitive = true);
@@ -45,6 +48,15 @@ namespace VehicleTracking.API
             // Register the Swagger services
             services.AddSwaggerDocument();
 
+            // Application Insights telemetry collection.
+            services.AddApplicationInsightsTelemetry();
+
+            // Azure cache for Redis
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = Configuration["RedisCache:ConnectionString"];
+            });
+
             // Register application services
             RegisterAppServices(services);
         }
@@ -52,7 +64,8 @@ namespace VehicleTracking.API
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
             UserManager<ApplicationUser> userManager,
-            RoleManager<IdentityRole<Guid>> roleManager)
+            RoleManager<IdentityRole<Guid>> roleManager,
+            TelemetryClient telemetryClient)
         {
             if (env.IsDevelopment())
             {
@@ -64,7 +77,7 @@ namespace VehicleTracking.API
             app.UseSwaggerUi3();
 
             // Configure handing errors globally
-            app.ConfigureExceptionHandler();
+            app.ConfigureExceptionHandler(telemetryClient);
 
             // Seed default data
             IdentityDataInitializer.SeedData(userManager, roleManager).Wait();
@@ -77,6 +90,9 @@ namespace VehicleTracking.API
             // Authenticate before the user accesses secure resources.
             app.UseAuthentication();
             app.UseAuthorization();
+
+            // Configure helpers
+            ConfigureHelpers(app);
 
             app.UseEndpoints(endpoints =>
             {
@@ -92,6 +108,12 @@ namespace VehicleTracking.API
                 options.UseSqlServer(configuration.GetConnectionString("UserConnectionString"));
             });
 
+            // Tracking context
+            services.AddDbContext<LocationTrackingContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("LocationTrackingConnectionString"));
+            });
+
             // Vehicle context
             services.AddDbContext<VehicleContext>(options =>
             {
@@ -104,39 +126,19 @@ namespace VehicleTracking.API
                 .AddDefaultTokenProviders();
         }
 
-        public void ConfigureJwtAuthentication(IServiceCollection services)
-        {
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(options =>
-            {
-                options.RequireHttpsMetadata = false;
-                options.SaveToken = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidIssuer = Configuration["Tokens:Issuer"],
-                    ValidAudience = Configuration["Tokens:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Tokens:Key"]))
-                };
-                options.Events = new JwtBearerEvents
-                {
-                    OnTokenValidated = context =>
-                    {
-                        var testing = context;
-                        return Task.FromResult(0);
-                    }
-                };
-            });
-        }
-
         public void RegisterAppServices(IServiceCollection services)
         {
+            // ASP.NET HttpContext dependency
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             // Services
             services.RegisterServices();
+        }
+
+        public void ConfigureHelpers(IApplicationBuilder app)
+        {
+            // Inject the IHttpContextAccessor into the HttpContextHelper
+            HttpContextHelper.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
         }
     }
 }
